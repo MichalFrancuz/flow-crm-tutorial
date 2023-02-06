@@ -2,6 +2,7 @@ package com.example.application.views.list;
 
 import com.example.application.data.entity.Contact;
 import com.example.application.data.service.CrmService;
+import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -17,12 +18,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.button.Button;
 
+import javax.annotation.security.PermitAll;
 import java.util.Collections;
 
 //import static org.jcp.xml.dsig.internal.dom.DOMKeyInfo.getContent;
 
 @PageTitle("Contacts | Vaadin CRM")
-@Route(value = "")
+@Route(value = "", layout = MainLayout.class)
+@PermitAll
 public class ListView extends VerticalLayout {
     Grid<Contact> grid = new Grid<>(Contact.class);
     TextField filterText = new TextField();
@@ -70,6 +73,8 @@ public class ListView extends VerticalLayout {
         form.setWidth("25em");
 
         form.addListener(ContactForm.SaveEvent.class, this::saveContact);
+        form.addListener(ContactForm.DeleteEvent.class, this::deleteContact);
+        form.addListener(ContactForm.CloseEvent.class, e -> closeEditor());
     }
 
     private void saveContact(ContactForm.SaveEvent event) {
@@ -78,6 +83,11 @@ public class ListView extends VerticalLayout {
         closeEditor();
     }
 
+    private void deleteContact(ContactForm.DeleteEvent event) {
+        service.deleteContact((event.getContact()));
+        updateList();
+        closeEditor();
+    }
     private Component getToolbar() {
         filterText.setPlaceholder("Filter by name...");
         filterText.setClearButtonVisible(true);
