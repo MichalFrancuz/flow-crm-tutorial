@@ -42,6 +42,13 @@ public class ListView extends VerticalLayout {
         );
 
         updateList();
+        closeEditor();
+    }
+
+    private void closeEditor() {
+        form.setContact(null);
+        form.setVisible(false);
+        removeClassName("editing");
     }
 
     private void updateList() {
@@ -61,6 +68,14 @@ public class ListView extends VerticalLayout {
     private void configureForm() {
         form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
         form.setWidth("25em");
+
+        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
+    }
+
+    private void saveContact(ContactForm.SaveEvent event) {
+        service.saveContact(event.getContact());
+        updateList();
+        closeEditor();
     }
 
     private Component getToolbar() {
@@ -70,10 +85,16 @@ public class ListView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         Button addContactButton = new Button("Add contact");
+        addContactButton.addClickListener(e -> addContact());
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
         toolbar.addClassName("toolbar");
         return toolbar;
+    }
+
+    private void addContact() {
+        grid.asSingleSelect().clear();
+        editContact(new Contact());
     }
 
     private void configureGrid() {
@@ -84,7 +105,17 @@ public class ListView extends VerticalLayout {
         grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Company");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
+        grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
+    }
 
+    private void editContact(Contact contact) {
+        if (contact == null) {
+            closeEditor();
+        } else {
+            form.setContact(contact);
+            form.setVisible(true);
+            addClassName("editing");
+        }
     }
 
 }
