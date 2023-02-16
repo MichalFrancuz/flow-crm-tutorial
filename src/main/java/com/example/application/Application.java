@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @SpringBootApplication
 @Theme(value = "flowcrmtutorial")
 @PWA(
-        name = "Vaadin CRM",
+        name = "Vaadin CRM - my first webapp",
         shortName = "CRM",
         offlinePath = "offline.html",
         offlineResources = {"icons/icon.png", "images/offline.png"})
