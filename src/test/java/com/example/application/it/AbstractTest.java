@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTest extends ParallelTest {
     private static final String SERVER_HOST = IPAddress.findSiteLocalAddress();
-    private static final int SERVER_PORT = 8080;
+    private static final int SERVER_PORT = 5000;
     private final String route;
 
     static {
@@ -41,6 +41,6 @@ public abstract class AbstractTest extends ParallelTest {
     }
 
     private static String getURL(String route) {
-        return String.format("http://%s:%d/%s", SERVER_HOST, SERVER_PORT, route);
+        return String.format("http://myfirstwebapp-env.eba-eueeuq5v.us-east-1.elasticbeanstalk.com/login", SERVER_HOST, SERVER_PORT, route);
     }
 }
